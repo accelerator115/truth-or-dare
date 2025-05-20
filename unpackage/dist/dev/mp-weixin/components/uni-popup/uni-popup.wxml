@@ -1,0 +1,1 @@
+<view><view class="{{['uni-popup', h]}}" catchtouchmove="{{i}}"><uni-transition wx:if="{{a}}" bindclick="{{b}}" u-i="16293926-0" bind:__l="__l" u-p="{{c}}"/><uni-transition wx:if="{{g}}" u-s="{{['d']}}" bindclick="{{f}}" u-i="16293926-1" bind:__l="__l" u-p="{{g}}"><view class="{{['uni-popup__wrapper', d]}}" catchtap="{{e}}"><slot/></view></uni-transition></view></view>

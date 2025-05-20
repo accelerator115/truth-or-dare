@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "真心话大冒险",
+    "navigationBarBackgroundColor": "#FF6B6B",
+    "backgroundColor": "#F8F8F8"
+  },
+  "permission": {},
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {
+    "uni-popup": "/components/uni-popup/uni-popup",
+    "uni-transition": "/components/uni-transition/uni-transition"
+  }
+}

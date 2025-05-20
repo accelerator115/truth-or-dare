@@ -1,0 +1,48 @@
+<script>
+	export default {
+		onLaunch: function() {
+			console.log('真心话大冒险应用启动')
+			
+			// 设置默认标题
+			uni.setNavigationBarTitle({
+				title: '真心话大冒险'
+			})
+		},
+		onShow: function() {
+			console.log('App Show')
+		},
+		onHide: function() {
+			console.log('App Hide')
+		}
+	}
+</script>
+
+<style>
+	/*每个页面公共css */
+	page {
+		font-family: 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		background-color: #f8f8f8;
+	}
+	
+	.container {
+		padding: 20rpx;
+	}
+	
+	.btn {
+		background-color: #FF6B6B;
+		color: #ffffff;
+		border-radius: 10rpx;
+		padding: 20rpx 40rpx;
+		font-size: 32rpx;
+		margin: 20rpx 0;
+		text-align: center;
+	}
+	
+	.card {
+		background-color: #ffffff;
+		border-radius: 15rpx;
+		padding: 30rpx;
+		margin-bottom: 30rpx;
+		box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+	}
+</style>
