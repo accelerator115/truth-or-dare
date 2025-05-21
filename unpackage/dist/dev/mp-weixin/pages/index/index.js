@@ -56,16 +56,16 @@ const _sfc_main = {
           history.value = JSON.parse(savedHistory);
         }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:131", "读取本地存储失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:130", "读取本地存储失败:", e);
       }
     });
     const selectMode = (mode) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:137", "选择模式:", mode);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:136", "选择模式:", mode);
       selectedMode.value = mode;
       try {
         common_vendor.index.setStorageSync("truth-or-dare-mode", mode);
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:143", "保存模式失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:142", "保存模式失败:", e);
       }
     };
     const addItem = () => {
@@ -98,7 +98,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:185", "保存项目失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:184", "保存项目失败:", e);
       }
     };
     const deleteItem = (index) => {
@@ -110,7 +110,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:200", "删除项目失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:199", "删除项目失败:", e);
       }
     };
     const importDefaultItems = () => {
@@ -132,7 +132,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:231", "导入默认内容失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:230", "导入默认内容失败:", e);
       }
     };
     const startSpin = () => {
@@ -145,18 +145,18 @@ const _sfc_main = {
       }
       if (isSpinning.value)
         return;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:245", "开始旋转轮盘");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:244", "开始旋转轮盘");
       isSpinning.value = true;
       stopRequested.value = false;
     };
     const stopSpin = () => {
       if (!isSpinning.value)
         return;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:253", "请求停止轮盘");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:252", "请求停止轮盘");
       stopRequested.value = true;
     };
     const onSpinEnd = (item) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:257", "轮盘停止，选中项目:", item);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:256", "轮盘停止，选中项目:", item);
       isSpinning.value = false;
       stopRequested.value = false;
       selectedItem.value = item;
@@ -172,7 +172,7 @@ const _sfc_main = {
       try {
         common_vendor.index.setStorageSync("truth-or-dare-history", JSON.stringify(history.value));
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:278", "保存历史记录失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:277", "保存历史记录失败:", e);
       }
       common_vendor.nextTick$1(() => {
         common_vendor.index.showModal({

@@ -7,7 +7,7 @@
 					{{ index + 1 }}
 				</text>
 			</view>
-			<view class="wheel-center">{{ isAnimating ? '旋转中' : '转盘' }}</view>
+			<!-- <view class="wheel-center">{{ isAnimating ? '旋转中' : '转盘' }}</view> -->
 		</view>
 		<view class="wheel-pointer"></view>
 	</view>
@@ -59,26 +59,30 @@ watch(() => props.stopRequested, (newVal) => {
 const getWheelItemStyle = (index) => {
 	const itemCount = props.items.length;
 	const angle = 360 / itemCount;
-
-	// 当项目数量小于等于4个时，使用更简单的扇形计算方式
-	if (itemCount <= 4) {
-		const startAngle = angle * index;
-
-		return {
-			position: 'absolute',
-			top: '0',
-			left: '0',
-			width: '50%',
-			height: '100%',
-			transformOrigin: 'right center',
-			transform: `rotate(${rotate}deg)`,
-			backgroundColor: getItemColor(index),
-			clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-		};
-	}
-
-	// 对于更多项目，使用现有的计算方法
 	const startAngle = angle * index;
+
+	// Generate points for a smooth sector shape
+	const generateSectorPoints = (startAngle, endAngle) => {
+		const points = ['50% 50%']; // Center point
+		const steps = 20; // More steps = smoother curve
+		
+		// Generate points along the arc for a smooth curve
+		for (let i = 0; i <= steps; i++) {
+			const currAngle = startAngle + (i / steps) * (endAngle - startAngle);
+			const radians = currAngle * Math.PI / 180;
+			const x = 50 + 50 * Math.cos(radians);
+			const y = 50 + 50 * Math.sin(radians);
+			points.push(`${x}% ${y}%`);
+		}
+		
+		return points.join(', ');
+	};
+
+	// Create polygon points for a smooth sector
+	const sectorPoints = generateSectorPoints(startAngle, startAngle + angle);
+
+	// Get the base color and create slightly different shades for a gradient effect
+	const baseColor = getItemColor(index);
 
 	return {
 		position: 'absolute',
@@ -86,9 +90,12 @@ const getWheelItemStyle = (index) => {
 		left: '0',
 		width: '100%',
 		height: '100%',
-		clipPath: `polygon(50% 50%, ${50 + 50 * Math.cos(startAngle * Math.PI / 180)}% ${50 + 50 * Math.sin(startAngle * Math.PI / 180)}%, ${50 + 50 * Math.cos((startAngle + angle) * Math.PI / 180)}% ${50 + 50 * Math.sin((startAngle + angle) * Math.PI / 180)}%)`,
-		backgroundColor: getItemColor(index)
+		clipPath: `polygon(${sectorPoints})`,
+		background: baseColor,
+		boxShadow: 'inset 0 0 10rpx rgba(0, 0, 0, 0.3)',
+		borderRadius: '50%', // Helps with anti-aliasing at the edges
 	};
+
 };
 
 const getTextStyle = (index) => {
@@ -171,7 +178,12 @@ const getTextStyle = (index) => {
 
 const getItemColor = (index) => {
 	// 交替的颜色，可以根据需要修改
-	const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2', '#F6AE2D'];
+	const colors = [
+		'#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2', '#F6AE2D', 
+		'#F94144', '#577590', '#43AA8B', '#90BE6D', '#F8961E', '#F9C74F', 
+		'#9C6644', '#BC4749', '#5F0F40', '#9A031E', '#FB8B24', '#0F4C5C',
+		'#E76F51', '#2A9D8F', '#E63946', '#457B9D', '#7209B7', '#3A0CA3'
+	];
 	return colors[index % colors.length];
 };
 

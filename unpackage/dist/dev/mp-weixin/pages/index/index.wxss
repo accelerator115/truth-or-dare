@@ -1,181 +1,184 @@
 
 .container {
-		padding: 30rpx;
+	padding: 30rpx;
 }
 .title {
-		font-size: 36rpx;
-		font-weight: bold;
-		margin-bottom: 20rpx;
-		color: #333;
+	font-size: 36rpx;
+	font-weight: bold;
+	margin-bottom: 20rpx;
+	color: #333;
 }
 .mode-selector {
-		text-align: center;
+	text-align: center;
 }
 .mode-buttons {
-		display: flex;
-		justify-content: space-around;
-		margin-top: 20rpx;
+	display: flex;
+	justify-content: space-around;
+	margin-top: 20rpx;
 }
 .mode-btn {
-		width: 45%;
-		padding: 20rpx 0;
-		text-align: center;
-		border-radius: 10rpx;
-		background-color: #f0f0f0;
-		color: #333;
-		font-weight: bold;
-		position: relative;
-		overflow: hidden;
+	width: 45%;
+	padding: 20rpx 0;
+	text-align: center;
+	border-radius: 10rpx;
+	background-color: #f0f0f0;
+	color: #333;
+	font-weight: bold;
+	position: relative;
+	overflow: hidden;
 }
 .mode-btn:active {
-		opacity: 0.8;
-		transform: scale(0.98);
+	opacity: 0.8;
+	transform: scale(0.98);
 }
 .mode-btn.active {
-		background-color: #FF6B6B;
-		color: #fff;
+	background-color: #FF6B6B;
+	color: #fff;
 }
 .input-group {
-		display: flex;
-		margin-bottom: 20rpx;
+	display: flex;
+	margin-bottom: 20rpx;
 }
 .input-group input {
-		flex: 1;
-		padding: 20rpx;
-		border: 1px solid #ddd;
-		border-radius: 10rpx;
-		margin-right: 20rpx;
+	flex: 1;
+	padding: 20rpx;
+	border: 1px solid #ddd;
+	border-radius: 10rpx;
+	margin-right: 20rpx;
 }
 .input-group button {
-		background-color: #FF6B6B;
-		color: #fff;
-		border: none;
-		border-radius: 10rpx;
-		padding: 0 30rpx;
+	background-color: #FF6B6B;
+	color: #fff;
+	border: none;
+	border-radius: 10rpx;
+	padding: 0 30rpx;
 }
 .input-group button:active {
-		opacity: 0.8;
-		transform: scale(0.98);
+	opacity: 0.8;
+	transform: scale(0.98);
 }
 .import-btn {
-		text-align: center;
-		background-color: #4ECDC4;
-		color: #fff;
-		padding: 20rpx 0;
-		border-radius: 10rpx;
-		margin-bottom: 30rpx;
+	text-align: center;
+	background-color: #4ECDC4;
+	color: #fff;
+	padding: 20rpx 0;
+	border-radius: 10rpx;
+	margin-bottom: 30rpx;
 }
 .import-btn:active {
-		opacity: 0.8;
-		transform: scale(0.98);
+	opacity: 0.8;
+	transform: scale(0.98);
 }
 .item-list {
-		margin-top: 30rpx;
+	margin-top: 30rpx;
 }
 .list-title {
-		font-size: 32rpx;
-		margin-bottom: 20rpx;
-		color: #333;
+	font-size: 32rpx;
+	margin-bottom: 20rpx;
+	color: #333;
 }
 .item {
-		display: flex;
-		justify-content: space-between;
-		padding: 20rpx;
-		background-color: #f9f9f9;
-		margin-bottom: 10rpx;
-		border-radius: 8rpx;
+	display: flex;
+	justify-content: space-between;
+	padding: 20rpx;
+	background-color: #f9f9f9;
+	margin-bottom: 10rpx;
+	border-radius: 8rpx;
 }
 .item.current-mode {
-		border-left: 6rpx solid #FF6B6B;
+	border-left: 6rpx solid #FF6B6B;
 }
 .item-content {
-		display: flex;
-		flex-direction: column;
-		flex: 1;
-		margin-right: 20rpx;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	margin-right: 20rpx;
 }
 .item-type {
-		font-size: 24rpx;
-		color: #888;
-		margin-bottom: 6rpx;
+	font-size: 24rpx;
+	color: #888;
+	margin-bottom: 6rpx;
 }
 .delete {
-		color: #FF6B6B;
-		align-self: center;
-		padding: 10rpx;
+	color: #FF6B6B;
+	align-self: center;
+	padding: 10rpx;
 }
 .delete:active {
-		opacity: 0.7;
-		transform: scale(0.95);
+	opacity: 0.7;
+	transform: scale(0.95);
 }
 .wheel-section {
-		text-align: center;
-		padding: 30rpx;
+	text-align: center;
+	padding: 30rpx;
 }
 .button-group {
-		display: flex;
-		justify-content: space-between;
-		margin-top: 40rpx;
-		gap: 20rpx;
+	display: flex;
+	justify-content: space-between;
+	margin-top: 40rpx;
+	gap: 20rpx;
 }
-.spin-btn, .stop-btn {
-		flex: 1;
-		padding: 20rpx 0;
-		border-radius: 10rpx;
-		font-weight: bold;
-		color: #fff;
-		transition: all 0.2s;
+.spin-btn,
+.stop-btn {
+	flex: 1;
+	padding: 20rpx 0;
+	border-radius: 10rpx;
+	font-weight: bold;
+	color: #fff;
+	transition: all 0.2s;
 }
-.spin-btn:active, .stop-btn:active {
-		opacity: 0.8;
-		transform: scale(0.98);
+.spin-btn:active,
+.stop-btn:active {
+	opacity: 0.8;
+	transform: scale(0.98);
 }
 .spin-btn {
-		background-color: #FF6B6B;
+	background-color: #FF6B6B;
 }
 .stop-btn {
-		background-color: #4ECDC4;
+	background-color: #4ECDC4;
 }
-.spin-btn.disabled, .stop-btn.disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
+.spin-btn.disabled,
+.stop-btn.disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 .notice {
-		text-align: center;
-		padding: 40rpx;
-		color: #888;
+	text-align: center;
+	padding: 40rpx;
+	color: #888;
 }
 .history-list {
-		margin-top: 20rpx;
+	margin-top: 20rpx;
 }
 .history-item {
-		background-color: #f9f9f9;
-		padding: 20rpx;
-		margin-bottom: 15rpx;
-		border-radius: 8rpx;
+	background-color: #f9f9f9;
+	padding: 20rpx;
+	margin-bottom: 15rpx;
+	border-radius: 8rpx;
 }
 .history-info {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 10rpx;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10rpx;
 }
 .history-type {
-		color: #FF6B6B;
-		font-size: 26rpx;
-		font-weight: bold;
+	color: #FF6B6B;
+	font-size: 26rpx;
+	font-weight: bold;
 }
 .history-date {
-		color: #999;
-		font-size: 24rpx;
+	color: #999;
+	font-size: 24rpx;
 }
 .history-content {
-		font-size: 28rpx;
+	font-size: 28rpx;
 }
 .clear-btn {
-		text-align: center;
-		margin-top: 20rpx;
-		padding: 15rpx 0;
-		background-color: #f0f0f0;
-		color: #666;
-		border-radius: 8rpx;
+	text-align: center;
+	margin-top: 20rpx;
+	padding: 15rpx 0;
+	background-color: #f0f0f0;
+	color: #666;
+	border-radius: 8rpx;
 }

@@ -42,28 +42,32 @@ const _sfc_main = {
     const getWheelItemStyle = (index) => {
       const itemCount = props.items.length;
       const angle = 360 / itemCount;
-      if (itemCount <= 4) {
-        return {
-          position: "absolute",
-          top: "0",
-          left: "0",
-          width: "50%",
-          height: "100%",
-          transformOrigin: "right center",
-          transform: `rotate(${rotate}deg)`,
-          backgroundColor: getItemColor(index),
-          clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)"
-        };
-      }
       const startAngle = angle * index;
+      const generateSectorPoints = (startAngle2, endAngle) => {
+        const points = ["50% 50%"];
+        const steps = 20;
+        for (let i = 0; i <= steps; i++) {
+          const currAngle = startAngle2 + i / steps * (endAngle - startAngle2);
+          const radians = currAngle * Math.PI / 180;
+          const x = 50 + 50 * Math.cos(radians);
+          const y = 50 + 50 * Math.sin(radians);
+          points.push(`${x}% ${y}%`);
+        }
+        return points.join(", ");
+      };
+      const sectorPoints = generateSectorPoints(startAngle, startAngle + angle);
+      const baseColor = getItemColor(index);
       return {
         position: "absolute",
         top: "0",
         left: "0",
         width: "100%",
         height: "100%",
-        clipPath: `polygon(50% 50%, ${50 + 50 * Math.cos(startAngle * Math.PI / 180)}% ${50 + 50 * Math.sin(startAngle * Math.PI / 180)}%, ${50 + 50 * Math.cos((startAngle + angle) * Math.PI / 180)}% ${50 + 50 * Math.sin((startAngle + angle) * Math.PI / 180)}%)`,
-        backgroundColor: getItemColor(index)
+        clipPath: `polygon(${sectorPoints})`,
+        background: baseColor,
+        boxShadow: "inset 0 0 10rpx rgba(0, 0, 0, 0.3)",
+        borderRadius: "50%"
+        // Helps with anti-aliasing at the edges
       };
     };
     const getTextStyle = (index) => {
@@ -136,7 +140,32 @@ const _sfc_main = {
       };
     };
     const getItemColor = (index) => {
-      const colors = ["#FF6B6B", "#4ECDC4", "#FFD166", "#06D6A0", "#118AB2", "#F6AE2D"];
+      const colors = [
+        "#FF6B6B",
+        "#4ECDC4",
+        "#FFD166",
+        "#06D6A0",
+        "#118AB2",
+        "#F6AE2D",
+        "#F94144",
+        "#577590",
+        "#43AA8B",
+        "#90BE6D",
+        "#F8961E",
+        "#F9C74F",
+        "#9C6644",
+        "#BC4749",
+        "#5F0F40",
+        "#9A031E",
+        "#FB8B24",
+        "#0F4C5C",
+        "#E76F51",
+        "#2A9D8F",
+        "#E63946",
+        "#457B9D",
+        "#7209B7",
+        "#3A0CA3"
+      ];
       return colors[index % colors.length];
     };
     const startSpin = () => {
@@ -162,7 +191,7 @@ const _sfc_main = {
           if (elapsed >= duration) {
             rotation.value = finalRotationValue;
           }
-          common_vendor.index.__f__("log", "at components/wheel/wheel.vue:214", "轮盘动画结束");
+          common_vendor.index.__f__("log", "at components/wheel/wheel.vue:226", "轮盘动画结束");
           emit("spin-end", getSelectedItem());
         }
       };
@@ -174,7 +203,7 @@ const _sfc_main = {
         animationId.value = null;
       }
       isAnimating.value = false;
-      common_vendor.index.__f__("log", "at components/wheel/wheel.vue:233", "轮盘停止，当前角度:", rotation.value);
+      common_vendor.index.__f__("log", "at components/wheel/wheel.vue:245", "轮盘停止，当前角度:", rotation.value);
       emit("spin-end", getSelectedItem());
     };
     const easeOutQuart = (t) => {
@@ -221,11 +250,10 @@ const _sfc_main = {
             d: common_vendor.s(getWheelItemStyle(index))
           };
         }),
-        b: common_vendor.t(isAnimating.value ? "旋转中" : "转盘"),
-        c: `rotate(${rotation.value}deg)`,
-        d: common_vendor.o(handleTouchStart),
-        e: common_vendor.o(handleTouchEnd),
-        f: common_vendor.o(handleClick)
+        b: `rotate(${rotation.value}deg)`,
+        c: common_vendor.o(handleTouchStart),
+        d: common_vendor.o(handleTouchEnd),
+        e: common_vendor.o(handleClick)
       };
     };
   }
