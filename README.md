@@ -109,9 +109,16 @@ truth-or-dare/
 
 ### 开发步骤
 1. 克隆项目到本地
-2. 使用HBuilderX打开项目
-3. 选择运行平台进行调试
-4. 根据需要修改配置文件
+```bash
+git clone https://github.com/accelerator115/truth-or-dare.git
+```
+2. 安装依赖
+```bash
+npm install
+```
+3. 使用HBuilderX打开项目
+4. 选择运行平台进行调试
+5. 根据需要修改配置文件
 
 
 ## 界面特色
