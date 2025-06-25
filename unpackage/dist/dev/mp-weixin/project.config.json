@@ -18,7 +18,7 @@
         }
     },
     "compileType": "miniprogram",
-    "libVersion": "3.8.5",
+    "libVersion": "3.8.10",
     "appid": "wxbe48d01e8aee6a66",
     "projectname": "truth-or-dare",
     "condition": {},

@@ -48,6 +48,17 @@ watch(() => props.spinning, (newVal) => {
 	}
 });
 
+// 监听items变化，当切换模式时重置轮盘状态
+watch(() => props.items, (newItems, oldItems) => {
+	console.log('轮盘项目变化:', newItems);
+	// 如果项目列表发生变化，停止当前动画并重置状态
+	if (isAnimating.value) {
+		stopSpin();
+	}
+	// 可以选择重置旋转角度，或者保持当前角度
+	// rotation.value = 0;
+}, { deep: true });
+
 // 监听停止请求
 watch(() => props.stopRequested, (newVal) => {
 	if (newVal === true && isAnimating.value) {

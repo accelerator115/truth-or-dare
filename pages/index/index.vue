@@ -16,7 +16,10 @@
 					confirm-type="done" @confirm="addItem" />
 				<button @click.stop="addItem">添加</button>
 			</view>
-			<view class="import-btn" @click.stop="importDefaultItems">导入默认内容</view>
+			<view class="button-row">
+				<view class="import-btn" @click.stop="importDefaultItems">导入默认内容</view>
+				<view class="clear-options-btn" @click.stop="clearAllOptions">清除选项</view>
+			</view>
 			<view class="item-list" v-if="items.length > 0">
 				<view class="list-title">已添加内容 ({{ items.length }})</view>
 				<view class="item" v-for="(item, index) in items" :key="index"
@@ -30,6 +33,12 @@
 			</view>
 		</view>
 		<view class="wheel-section card" v-if="filteredItems.length >= 3">
+			<!-- 显示当前选择的项目 -->
+			<view class="current-selection" v-if="selectedItem.text">
+				<view class="selection-title">{{ selectedMode === 'truth' ? '真心话' : '大冒险' }}结果：</view>
+				<view class="selection-content">{{ selectedItem.text }}</view>
+			</view>
+			
 			<wheel :items="filteredItems" :spinning="isSpinning" :stopRequested="stopRequested" @spin-end="onSpinEnd"
 				@spin-request="startSpin"></wheel>
 			<view class="button-group">
@@ -57,6 +66,8 @@
 				</view>
 			</view>
 			<view class="clear-btn" @click.stop="clearHistory">清空历史记录</view>
+			<view class="clear-btn reset-btn" @click.stop="clearAllData">重置所有数据</view>
+			<view class="clear-btn reset-btn" @click.stop="clearAllOptions">清除所有选项</view>
 		</view>
 	</view>
 </template>
@@ -72,6 +83,12 @@ const items = ref([]);
 const isSpinning = ref(false);
 const stopRequested = ref(false);
 const selectedItem = ref({ text: '' });
+
+// 为每个模式分别保存上一次的选择
+const lastSelectedItems = ref({
+	truth: { text: '' },
+	dare: { text: '' }
+});
 
 // 记录历史
 const history = ref([]);
@@ -115,6 +132,9 @@ onMounted(() => {
 		const savedItems = uni.getStorageSync('truth-or-dare-items');
 		if (savedItems) {
 			items.value = JSON.parse(savedItems);
+		} else {
+			// 如果没有保存的数据，确保初始状态为空
+			items.value = [];
 		}
 
 		const savedMode = uni.getStorageSync('truth-or-dare-mode');
@@ -126,6 +146,14 @@ onMounted(() => {
 		if (savedHistory) {
 			history.value = JSON.parse(savedHistory);
 		}
+
+		// 加载每个模式的上一次选择
+		const savedLastSelected = uni.getStorageSync('truth-or-dare-last-selected');
+		if (savedLastSelected) {
+			lastSelectedItems.value = JSON.parse(savedLastSelected);
+			// 设置当前模式的选择项
+			selectedItem.value = lastSelectedItems.value[selectedMode.value] || { text: '' };
+		}
 	} catch (e) {
 		console.error('读取本地存储失败:', e);
 	}
@@ -134,10 +162,35 @@ onMounted(() => {
 // 方法
 const selectMode = (mode) => {
 	console.log('选择模式:', mode);
+	const oldMode = selectedMode.value;
+	
+	// 在切换前，保存当前模式的选择
+	if (selectedItem.value && selectedItem.value.text) {
+		lastSelectedItems.value[oldMode] = selectedItem.value;
+	}
+	
 	selectedMode.value = mode;
+	
+	// 重置轮盘状态
+	isSpinning.value = false;
+	stopRequested.value = false;
+	
+	// 切换到新模式的上一次选择
+	selectedItem.value = lastSelectedItems.value[mode] || { text: '' };
+	
+	// 如果模式确实发生了变化，给用户反馈
+	if (oldMode !== mode) {
+		uni.showToast({
+			title: `已切换到${mode === 'truth' ? '真心话' : '大冒险'}模式`,
+			icon: 'success',
+			duration: 1500
+		});
+	}
+	
 	// 保存到本地存储
 	try {
 		uni.setStorageSync('truth-or-dare-mode', mode);
+		uni.setStorageSync('truth-or-dare-last-selected', JSON.stringify(lastSelectedItems.value));
 	} catch (e) {
 		console.error('保存模式失败:', e);
 	}
@@ -258,6 +311,9 @@ const onSpinEnd = (item) => {
 	stopRequested.value = false;
 	selectedItem.value = item;
 
+	// 保存当前模式的选择
+	lastSelectedItems.value[selectedMode.value] = item;
+
 	// 添加到历史记录
 	const historyItem = {
 		text: item.text,
@@ -270,9 +326,10 @@ const onSpinEnd = (item) => {
 		history.value = history.value.slice(0, 20);
 	}
 
-	// 保存历史记录
+	// 保存历史记录和上一次选择
 	try {
 		uni.setStorageSync('truth-or-dare-history', JSON.stringify(history.value));
+		uni.setStorageSync('truth-or-dare-last-selected', JSON.stringify(lastSelectedItems.value));
 	} catch (e) {
 		console.error('保存历史记录失败:', e);
 	}
@@ -300,6 +357,73 @@ const clearHistory = () => {
 					title: '已清空历史记录',
 					icon: 'success'
 				});
+			}
+		}
+	});
+};
+
+const clearAllData = () => {
+	uni.showModal({
+		title: '确认重置',
+		content: '确定要清空所有数据（包括选项、历史记录等）并重置到初始状态吗？',
+		success: (res) => {
+			if (res.confirm) {
+				// 清空所有数据
+				items.value = [];
+				history.value = [];
+				lastSelectedItems.value = {
+					truth: { text: '' },
+					dare: { text: '' }
+				};
+				selectedItem.value = { text: '' };
+				
+				// 清空本地存储
+				try {
+					uni.removeStorageSync('truth-or-dare-items');
+					uni.removeStorageSync('truth-or-dare-history');
+					uni.removeStorageSync('truth-or-dare-last-selected');
+					uni.removeStorageSync('truth-or-dare-mode');
+					
+					uni.showToast({
+						title: '已重置到初始状态',
+						icon: 'success'
+					});
+				} catch (e) {
+					console.error('清空数据失败:', e);
+				}
+			}
+		}
+	});
+};
+
+const clearAllOptions = () => {
+	uni.showModal({
+		title: '确认清除',
+		content: '确定要清除所有选项吗？（历史记录将保留）',
+		success: (res) => {
+			if (res.confirm) {
+				// 只清空选项列表
+				items.value = [];
+				
+				// 重置当前选择
+				selectedItem.value = { text: '' };
+				lastSelectedItems.value = {
+					truth: { text: '' },
+					dare: { text: '' }
+				};
+				
+				// 更新本地存储
+				try {
+					uni.setStorageSync('truth-or-dare-items', JSON.stringify([]));
+					uni.setStorageSync('truth-or-dare-last-selected', JSON.stringify(lastSelectedItems.value));
+					
+					uni.showToast({
+						title: '已清除所有选项',
+						icon: 'success'
+					});
+				} catch (e) {
+					console.error('清除选项失败:', e);
+				}
 			}
 		}
 	});
@@ -390,6 +514,31 @@ const clearHistory = () => {
 	transform: scale(0.98);
 }
 
+.button-row {
+	display: flex;
+	gap: 20rpx;
+	margin-bottom: 30rpx;
+}
+
+.button-row .import-btn {
+	flex: 1;
+	margin-bottom: 0;
+}
+
+.clear-options-btn {
+	flex: 1;
+	text-align: center;
+	background-color: #ff6b6b;
+	color: #fff;
+	padding: 20rpx 0;
+	border-radius: 10rpx;
+}
+
+.clear-options-btn:active {
+	opacity: 0.8;
+	transform: scale(0.98);
+}
+
 .item-list {
 	margin-top: 30rpx;
 }
@@ -440,6 +589,33 @@ const clearHistory = () => {
 .wheel-section {
 	text-align: center;
 	padding: 30rpx;
+}
+
+.current-selection {
+	margin-bottom: 30rpx;
+	padding: 25rpx;
+	background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+	border-radius: 15rpx;
+	box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+}
+
+.selection-title {
+	font-size: 28rpx;
+	color: #fff;
+	font-weight: bold;
+	margin-bottom: 15rpx;
+	text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+}
+
+.selection-content {
+	font-size: 32rpx;
+	color: #fff;
+	line-height: 1.5;
+	padding: 15rpx;
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 10rpx;
+	backdrop-filter: blur(10rpx);
+	text-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.3);
 }
 
 .button-group {
@@ -524,5 +700,16 @@ const clearHistory = () => {
 	background-color: #f0f0f0;
 	color: #666;
 	border-radius: 8rpx;
+}
+
+.reset-btn {
+	background-color: #ff4757;
+	color: #fff;
+	margin-top: 10rpx;
+}
+
+.reset-btn:active {
+	opacity: 0.8;
+	transform: scale(0.98);
 }
 </style>

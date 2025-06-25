@@ -69,6 +69,27 @@
 	opacity: 0.8;
 	transform: scale(0.98);
 }
+.button-row {
+	display: flex;
+	gap: 20rpx;
+	margin-bottom: 30rpx;
+}
+.button-row .import-btn {
+	flex: 1;
+	margin-bottom: 0;
+}
+.clear-options-btn {
+	flex: 1;
+	text-align: center;
+	background-color: #ff6b6b;
+	color: #fff;
+	padding: 20rpx 0;
+	border-radius: 10rpx;
+}
+.clear-options-btn:active {
+	opacity: 0.8;
+	transform: scale(0.98);
+}
 .item-list {
 	margin-top: 30rpx;
 }
@@ -111,6 +132,31 @@
 .wheel-section {
 	text-align: center;
 	padding: 30rpx;
+}
+.current-selection {
+	margin-bottom: 30rpx;
+	padding: 25rpx;
+	background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+	border-radius: 15rpx;
+	box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+}
+.selection-title {
+	font-size: 28rpx;
+	color: #fff;
+	font-weight: bold;
+	margin-bottom: 15rpx;
+	text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+}
+.selection-content {
+	font-size: 32rpx;
+	color: #fff;
+	line-height: 1.5;
+	padding: 15rpx;
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 10rpx;
+	-webkit-backdrop-filter: blur(10rpx);
+	        backdrop-filter: blur(10rpx);
+	text-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.3);
 }
 .button-group {
 	display: flex;
@@ -181,4 +227,13 @@
 	background-color: #f0f0f0;
 	color: #666;
 	border-radius: 8rpx;
+}
+.reset-btn {
+	background-color: #ff4757;
+	color: #fff;
+	margin-top: 10rpx;
+}
+.reset-btn:active {
+	opacity: 0.8;
+	transform: scale(0.98);
 }

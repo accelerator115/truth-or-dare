@@ -13,6 +13,10 @@ const _sfc_main = {
     const isSpinning = common_vendor.ref(false);
     const stopRequested = common_vendor.ref(false);
     const selectedItem = common_vendor.ref({ text: "" });
+    const lastSelectedItems = common_vendor.ref({
+      truth: { text: "" },
+      dare: { text: "" }
+    });
     const history = common_vendor.ref([]);
     const defaultTruth = [
       "你最喜欢的一首歌是什么？",
@@ -46,6 +50,8 @@ const _sfc_main = {
         const savedItems = common_vendor.index.getStorageSync("truth-or-dare-items");
         if (savedItems) {
           items.value = JSON.parse(savedItems);
+        } else {
+          items.value = [];
         }
         const savedMode = common_vendor.index.getStorageSync("truth-or-dare-mode");
         if (savedMode) {
@@ -55,17 +61,37 @@ const _sfc_main = {
         if (savedHistory) {
           history.value = JSON.parse(savedHistory);
         }
+        const savedLastSelected = common_vendor.index.getStorageSync("truth-or-dare-last-selected");
+        if (savedLastSelected) {
+          lastSelectedItems.value = JSON.parse(savedLastSelected);
+          selectedItem.value = lastSelectedItems.value[selectedMode.value] || { text: "" };
+        }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:130", "读取本地存储失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:158", "读取本地存储失败:", e);
       }
     });
     const selectMode = (mode) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:136", "选择模式:", mode);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:164", "选择模式:", mode);
+      const oldMode = selectedMode.value;
+      if (selectedItem.value && selectedItem.value.text) {
+        lastSelectedItems.value[oldMode] = selectedItem.value;
+      }
       selectedMode.value = mode;
+      isSpinning.value = false;
+      stopRequested.value = false;
+      selectedItem.value = lastSelectedItems.value[mode] || { text: "" };
+      if (oldMode !== mode) {
+        common_vendor.index.showToast({
+          title: `已切换到${mode === "truth" ? "真心话" : "大冒险"}模式`,
+          icon: "success",
+          duration: 1500
+        });
+      }
       try {
         common_vendor.index.setStorageSync("truth-or-dare-mode", mode);
+        common_vendor.index.setStorageSync("truth-or-dare-last-selected", JSON.stringify(lastSelectedItems.value));
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:142", "保存模式失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:195", "保存模式失败:", e);
       }
     };
     const addItem = () => {
@@ -98,7 +124,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:184", "保存项目失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:237", "保存项目失败:", e);
       }
     };
     const deleteItem = (index) => {
@@ -110,7 +136,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:199", "删除项目失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:252", "删除项目失败:", e);
       }
     };
     const importDefaultItems = () => {
@@ -132,7 +158,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:230", "导入默认内容失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:283", "导入默认内容失败:", e);
       }
     };
     const startSpin = () => {
@@ -145,21 +171,22 @@ const _sfc_main = {
       }
       if (isSpinning.value)
         return;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:244", "开始旋转轮盘");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:297", "开始旋转轮盘");
       isSpinning.value = true;
       stopRequested.value = false;
     };
     const stopSpin = () => {
       if (!isSpinning.value)
         return;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:252", "请求停止轮盘");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:305", "请求停止轮盘");
       stopRequested.value = true;
     };
     const onSpinEnd = (item) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:256", "轮盘停止，选中项目:", item);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:309", "轮盘停止，选中项目:", item);
       isSpinning.value = false;
       stopRequested.value = false;
       selectedItem.value = item;
+      lastSelectedItems.value[selectedMode.value] = item;
       const historyItem = {
         text: item.text,
         type: selectedMode.value,
@@ -171,8 +198,9 @@ const _sfc_main = {
       }
       try {
         common_vendor.index.setStorageSync("truth-or-dare-history", JSON.stringify(history.value));
+        common_vendor.index.setStorageSync("truth-or-dare-last-selected", JSON.stringify(lastSelectedItems.value));
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:277", "保存历史记录失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:334", "保存历史记录失败:", e);
       }
       common_vendor.nextTick$1(() => {
         common_vendor.index.showModal({
@@ -199,6 +227,61 @@ const _sfc_main = {
         }
       });
     };
+    const clearAllData = () => {
+      common_vendor.index.showModal({
+        title: "确认重置",
+        content: "确定要清空所有数据（包括选项、历史记录等）并重置到初始状态吗？",
+        success: (res) => {
+          if (res.confirm) {
+            items.value = [];
+            history.value = [];
+            lastSelectedItems.value = {
+              truth: { text: "" },
+              dare: { text: "" }
+            };
+            selectedItem.value = { text: "" };
+            try {
+              common_vendor.index.removeStorageSync("truth-or-dare-items");
+              common_vendor.index.removeStorageSync("truth-or-dare-history");
+              common_vendor.index.removeStorageSync("truth-or-dare-last-selected");
+              common_vendor.index.removeStorageSync("truth-or-dare-mode");
+              common_vendor.index.showToast({
+                title: "已重置到初始状态",
+                icon: "success"
+              });
+            } catch (e) {
+              common_vendor.index.__f__("error", "at pages/index/index.vue:392", "清空数据失败:", e);
+            }
+          }
+        }
+      });
+    };
+    const clearAllOptions = () => {
+      common_vendor.index.showModal({
+        title: "确认清除",
+        content: "确定要清除所有选项吗？（历史记录将保留）",
+        success: (res) => {
+          if (res.confirm) {
+            items.value = [];
+            selectedItem.value = { text: "" };
+            lastSelectedItems.value = {
+              truth: { text: "" },
+              dare: { text: "" }
+            };
+            try {
+              common_vendor.index.setStorageSync("truth-or-dare-items", JSON.stringify([]));
+              common_vendor.index.setStorageSync("truth-or-dare-last-selected", JSON.stringify(lastSelectedItems.value));
+              common_vendor.index.showToast({
+                title: "已清除所有选项",
+                icon: "success"
+              });
+            } catch (e) {
+              common_vendor.index.__f__("error", "at pages/index/index.vue:425", "清除选项失败:", e);
+            }
+          }
+        }
+      });
+    };
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: selectedMode.value === "truth" ? 1 : "",
@@ -210,10 +293,11 @@ const _sfc_main = {
         g: common_vendor.o(($event) => newItem.value = $event.detail.value),
         h: common_vendor.o(addItem),
         i: common_vendor.o(importDefaultItems),
-        j: items.value.length > 0
+        j: common_vendor.o(clearAllOptions),
+        k: items.value.length > 0
       }, items.value.length > 0 ? {
-        k: common_vendor.t(items.value.length),
-        l: common_vendor.f(items.value, (item, index, i0) => {
+        l: common_vendor.t(items.value.length),
+        m: common_vendor.f(items.value, (item, index, i0) => {
           return {
             a: common_vendor.t(item.type === "truth" ? "真心话" : "大冒险"),
             b: common_vendor.t(item.text),
@@ -223,24 +307,29 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        m: filteredItems.value.length >= 3
-      }, filteredItems.value.length >= 3 ? {
-        n: common_vendor.o(onSpinEnd),
-        o: common_vendor.o(startSpin),
-        p: common_vendor.p({
+        n: filteredItems.value.length >= 3
+      }, filteredItems.value.length >= 3 ? common_vendor.e({
+        o: selectedItem.value.text
+      }, selectedItem.value.text ? {
+        p: common_vendor.t(selectedMode.value === "truth" ? "真心话" : "大冒险"),
+        q: common_vendor.t(selectedItem.value.text)
+      } : {}, {
+        r: common_vendor.o(onSpinEnd),
+        s: common_vendor.o(startSpin),
+        t: common_vendor.p({
           items: filteredItems.value,
           spinning: isSpinning.value,
           stopRequested: stopRequested.value
         }),
-        q: common_vendor.t(isSpinning.value ? "旋转中..." : "开始旋转"),
-        r: common_vendor.o(startSpin),
-        s: isSpinning.value ? 1 : "",
-        t: common_vendor.o(stopSpin),
-        v: !isSpinning.value ? 1 : ""
-      } : {}, {
-        w: history.value.length > 0
+        v: common_vendor.t(isSpinning.value ? "旋转中..." : "开始旋转"),
+        w: common_vendor.o(startSpin),
+        x: isSpinning.value ? 1 : "",
+        y: common_vendor.o(stopSpin),
+        z: !isSpinning.value ? 1 : ""
+      }) : {}, {
+        A: history.value.length > 0
       }, history.value.length > 0 ? {
-        x: common_vendor.f(history.value, (item, index, i0) => {
+        B: common_vendor.f(history.value, (item, index, i0) => {
           return {
             a: common_vendor.t(item.type === "truth" ? "真心话" : "大冒险"),
             b: common_vendor.t(item.date),
@@ -248,7 +337,9 @@ const _sfc_main = {
             d: index
           };
         }),
-        y: common_vendor.o(clearHistory)
+        C: common_vendor.o(clearHistory),
+        D: common_vendor.o(clearAllData),
+        E: common_vendor.o(clearAllOptions)
       } : {});
     };
   }

@@ -33,9 +33,15 @@ const _sfc_main = {
         startSpin();
       }
     });
+    common_vendor.watch(() => props.items, (newItems, oldItems) => {
+      common_vendor.index.__f__("log", "at components/wheel/wheel.vue:53", "轮盘项目变化:", newItems);
+      if (isAnimating.value) {
+        stopSpin();
+      }
+    }, { deep: true });
     common_vendor.watch(() => props.stopRequested, (newVal) => {
       if (newVal === true && isAnimating.value) {
-        common_vendor.index.__f__("log", "at components/wheel/wheel.vue:54", "收到停止请求");
+        common_vendor.index.__f__("log", "at components/wheel/wheel.vue:65", "收到停止请求");
         stopSpin();
       }
     });
@@ -191,7 +197,7 @@ const _sfc_main = {
           if (elapsed >= duration) {
             rotation.value = finalRotationValue;
           }
-          common_vendor.index.__f__("log", "at components/wheel/wheel.vue:226", "轮盘动画结束");
+          common_vendor.index.__f__("log", "at components/wheel/wheel.vue:237", "轮盘动画结束");
           emit("spin-end", getSelectedItem());
         }
       };
@@ -203,7 +209,7 @@ const _sfc_main = {
         animationId.value = null;
       }
       isAnimating.value = false;
-      common_vendor.index.__f__("log", "at components/wheel/wheel.vue:245", "轮盘停止，当前角度:", rotation.value);
+      common_vendor.index.__f__("log", "at components/wheel/wheel.vue:256", "轮盘停止，当前角度:", rotation.value);
       emit("spin-end", getSelectedItem());
     };
     const easeOutQuart = (t) => {
