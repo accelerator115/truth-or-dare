@@ -1,0 +1,153 @@
+
+.guide-container.data-v-3b17e17e {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 999;
+	box-sizing: border-box;
+}
+.guide-mask.data-v-3b17e17e {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.7);
+}
+.guide-highlight.data-v-3b17e17e {
+	position: absolute;
+	border: 4rpx solid #FF6B6B;
+	border-radius: 12rpx;
+	box-shadow: 0 0 20rpx rgba(255, 107, 107, 0.6);
+	animation: pulse-3b17e17e 2s infinite;
+}
+@keyframes pulse-3b17e17e {
+0% {
+		box-shadow: 0 0 20rpx rgba(255, 107, 107, 0.6);
+}
+50% {
+		box-shadow: 0 0 30rpx rgba(255, 107, 107, 0.9);
+}
+100% {
+		box-shadow: 0 0 20rpx rgba(255, 107, 107, 0.6);
+}
+}
+.guide-card.data-v-3b17e17e {
+	background: #ffffff;
+	border-radius: 20rpx;
+	padding: 40rpx;
+	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.3);
+	animation: slideIn-3b17e17e 0.3s ease-out;
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+}
+@keyframes slideIn-3b17e17e {
+from {
+		opacity: 0;
+		transform: scale(0.8);
+}
+to {
+		opacity: 1;
+		transform: scale(1);
+}
+}
+.guide-header.data-v-3b17e17e {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 30rpx;
+}
+.guide-title.data-v-3b17e17e {
+	font-size: 36rpx;
+	font-weight: bold;
+	color: #333;
+}
+.guide-progress.data-v-3b17e17e {
+	background: #FF6B6B;
+	color: #fff;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	font-size: 24rpx;
+}
+.guide-step.data-v-3b17e17e {
+	font-weight: bold;
+}
+.guide-content.data-v-3b17e17e {
+	margin-bottom: 40rpx;
+}
+.guide-description.data-v-3b17e17e {
+	font-size: 30rpx;
+	line-height: 1.6;
+	color: #666;
+}
+.guide-actions.data-v-3b17e17e {
+	display: flex;
+	justify-content: space-between;
+	gap: 20rpx;
+	width: 100%;
+	box-sizing: border-box;
+}
+.guide-btn.data-v-3b17e17e {
+	flex: 1;
+	padding: 20rpx 0;
+	text-align: center;
+	border-radius: 12rpx;
+	font-size: 30rpx;
+	font-weight: bold;
+	transition: all 0.2s;
+	box-sizing: border-box;
+	min-width: 0; /* 确保flex项目能够正确收缩 */
+}
+.guide-btn.data-v-3b17e17e:active {
+	opacity: 0.8;
+	transform: scale(0.98);
+}
+.guide-btn-skip.data-v-3b17e17e {
+	background: #f0f0f0;
+	color: #666;
+}
+.guide-btn-next.data-v-3b17e17e {
+	background: #FF6B6B;
+	color: #fff;
+}
+.guide-arrow.data-v-3b17e17e {
+	width: 30rpx;
+	height: 30rpx;
+	position: fixed;
+	z-index: 998;
+}
+.arrow-up.data-v-3b17e17e {
+	border-left: 15rpx solid transparent;
+	border-right: 15rpx solid transparent;
+	border-bottom: 20rpx solid #FF6B6B;
+	filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.3));
+}
+.arrow-down.data-v-3b17e17e {
+	border-left: 15rpx solid transparent;
+	border-right: 15rpx solid transparent;
+	border-top: 20rpx solid #FF6B6B;
+	filter: drop-shadow(0 -2rpx 4rpx rgba(0, 0, 0, 0.3));
+}
+
+/* 响应式样式调整 */
+@media screen and (max-width: 480rpx) {
+.guide-card.data-v-3b17e17e {
+		padding: 30rpx;
+		border-radius: 15rpx;
+}
+.guide-title.data-v-3b17e17e {
+		font-size: 32rpx;
+}
+.guide-description.data-v-3b17e17e {
+		font-size: 28rpx;
+}
+}
+@media screen and (min-width: 768rpx) {
+.guide-card.data-v-3b17e17e {
+		padding: 50rpx;
+		border-radius: 25rpx;
+}
+}

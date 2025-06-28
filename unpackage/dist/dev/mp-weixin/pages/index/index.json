@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "真心话大冒险",
   "usingComponents": {
+    "guide": "../../components/guide/guide",
     "wheel": "../../components/wheel/wheel"
   }
 }

@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-	import { ref, computed, onMounted, nextTick, defineProps, defineExpose } from 'vue';
+	import { ref, computed, onMounted, nextTick } from 'vue';
 	
 	const props = defineProps({
 		// 开启动画

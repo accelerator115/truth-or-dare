@@ -15,11 +15,13 @@ app.$mount()
 import { createSSRApp } from 'vue'
 import uniPopup from '@/components/uni-popup/uni-popup.vue'
 import uniTransition from '@/components/uni-transition/uni-transition.vue'
+import guide from '@/components/guide/guide.vue'
 
 export function createApp() {
   const app = createSSRApp(App)
   app.component('uni-popup', uniPopup)
   app.component('uni-transition', uniTransition)
+  app.component('guide', guide)
   return {
     app
   }

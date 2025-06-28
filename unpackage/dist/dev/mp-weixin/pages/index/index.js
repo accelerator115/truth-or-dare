@@ -1,7 +1,12 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+if (!Array) {
+  const _easycom_guide2 = common_vendor.resolveComponent("guide");
+  _easycom_guide2();
+}
+const _easycom_guide = () => "../../components/guide/guide.js";
 if (!Math) {
-  wheel();
+  (_easycom_guide + wheel)();
 }
 const wheel = () => "../../components/wheel/wheel.js";
 const _sfc_main = {
@@ -13,6 +18,8 @@ const _sfc_main = {
     const isSpinning = common_vendor.ref(false);
     const stopRequested = common_vendor.ref(false);
     const selectedItem = common_vendor.ref({ text: "" });
+    const showGuideComponent = common_vendor.ref(false);
+    const isFirstTimeUser = common_vendor.ref(false);
     const lastSelectedItems = common_vendor.ref({
       truth: { text: "" },
       dare: { text: "" }
@@ -46,6 +53,7 @@ const _sfc_main = {
       return items.value.filter((item) => item.type === selectedMode.value);
     });
     common_vendor.onMounted(() => {
+      checkFirstTimeUser();
       try {
         const savedItems = common_vendor.index.getStorageSync("truth-or-dare-items");
         if (savedItems) {
@@ -67,11 +75,47 @@ const _sfc_main = {
           selectedItem.value = lastSelectedItems.value[selectedMode.value] || { text: "" };
         }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:158", "读取本地存储失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:177", "读取本地存储失败:", e);
       }
     });
+    const checkFirstTimeUser = () => {
+      try {
+        const guideCompleted = common_vendor.index.getStorageSync("truth-or-dare-guide-completed");
+        if (!guideCompleted) {
+          isFirstTimeUser.value = true;
+          setTimeout(() => {
+            showGuideComponent.value = true;
+          }, 1e3);
+        }
+      } catch (e) {
+        common_vendor.index.__f__("error", "at pages/index/index.vue:195", "检查首次使用状态失败:", e);
+      }
+    };
+    const showNewUserGuide = () => {
+      showGuideComponent.value = true;
+    };
+    const onGuideComplete = () => {
+      showGuideComponent.value = false;
+      isFirstTimeUser.value = false;
+      if (items.value.length === 0) {
+        setTimeout(() => {
+          common_vendor.index.showModal({
+            title: "温馨提示",
+            content: "要为您自动导入一些默认内容开始游戏吗？",
+            success: (res) => {
+              if (res.confirm) {
+                importDefaultItems();
+              }
+            }
+          });
+        }, 500);
+      }
+    };
+    const onGuideClose = () => {
+      showGuideComponent.value = false;
+    };
     const selectMode = (mode) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:164", "选择模式:", mode);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:228", "选择模式:", mode);
       const oldMode = selectedMode.value;
       if (selectedItem.value && selectedItem.value.text) {
         lastSelectedItems.value[oldMode] = selectedItem.value;
@@ -91,7 +135,7 @@ const _sfc_main = {
         common_vendor.index.setStorageSync("truth-or-dare-mode", mode);
         common_vendor.index.setStorageSync("truth-or-dare-last-selected", JSON.stringify(lastSelectedItems.value));
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:195", "保存模式失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:259", "保存模式失败:", e);
       }
     };
     const addItem = () => {
@@ -124,7 +168,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:237", "保存项目失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:301", "保存项目失败:", e);
       }
     };
     const deleteItem = (index) => {
@@ -136,7 +180,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:252", "删除项目失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:316", "删除项目失败:", e);
       }
     };
     const importDefaultItems = () => {
@@ -158,7 +202,7 @@ const _sfc_main = {
           icon: "success"
         });
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:283", "导入默认内容失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:347", "导入默认内容失败:", e);
       }
     };
     const startSpin = () => {
@@ -171,18 +215,18 @@ const _sfc_main = {
       }
       if (isSpinning.value)
         return;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:297", "开始旋转轮盘");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:361", "开始旋转轮盘");
       isSpinning.value = true;
       stopRequested.value = false;
     };
     const stopSpin = () => {
       if (!isSpinning.value)
         return;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:305", "请求停止轮盘");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:369", "请求停止轮盘");
       stopRequested.value = true;
     };
     const onSpinEnd = (item) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:309", "轮盘停止，选中项目:", item);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:373", "轮盘停止，选中项目:", item);
       isSpinning.value = false;
       stopRequested.value = false;
       selectedItem.value = item;
@@ -200,7 +244,7 @@ const _sfc_main = {
         common_vendor.index.setStorageSync("truth-or-dare-history", JSON.stringify(history.value));
         common_vendor.index.setStorageSync("truth-or-dare-last-selected", JSON.stringify(lastSelectedItems.value));
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:334", "保存历史记录失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:398", "保存历史记录失败:", e);
       }
       common_vendor.nextTick$1(() => {
         common_vendor.index.showModal({
@@ -250,7 +294,7 @@ const _sfc_main = {
                 icon: "success"
               });
             } catch (e) {
-              common_vendor.index.__f__("error", "at pages/index/index.vue:392", "清空数据失败:", e);
+              common_vendor.index.__f__("error", "at pages/index/index.vue:456", "清空数据失败:", e);
             }
           }
         }
@@ -276,7 +320,7 @@ const _sfc_main = {
                 icon: "success"
               });
             } catch (e) {
-              common_vendor.index.__f__("error", "at pages/index/index.vue:425", "清除选项失败:", e);
+              common_vendor.index.__f__("error", "at pages/index/index.vue:489", "清除选项失败:", e);
             }
           }
         }
@@ -284,20 +328,29 @@ const _sfc_main = {
     };
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: selectedMode.value === "truth" ? 1 : "",
-        b: common_vendor.o(($event) => selectMode("truth")),
-        c: selectedMode.value === "dare" ? 1 : "",
-        d: common_vendor.o(($event) => selectMode("dare")),
-        e: common_vendor.o(addItem),
-        f: newItem.value,
-        g: common_vendor.o(($event) => newItem.value = $event.detail.value),
-        h: common_vendor.o(addItem),
-        i: common_vendor.o(importDefaultItems),
-        j: common_vendor.o(clearAllOptions),
-        k: items.value.length > 0
+        a: !showGuideComponent.value
+      }, !showGuideComponent.value ? {
+        b: common_vendor.o(showNewUserGuide)
+      } : {}, {
+        c: common_vendor.o(onGuideComplete),
+        d: common_vendor.o(onGuideClose),
+        e: common_vendor.p({
+          show: showGuideComponent.value
+        }),
+        f: selectedMode.value === "truth" ? 1 : "",
+        g: common_vendor.o(($event) => selectMode("truth")),
+        h: selectedMode.value === "dare" ? 1 : "",
+        i: common_vendor.o(($event) => selectMode("dare")),
+        j: common_vendor.o(addItem),
+        k: newItem.value,
+        l: common_vendor.o(($event) => newItem.value = $event.detail.value),
+        m: common_vendor.o(addItem),
+        n: common_vendor.o(importDefaultItems),
+        o: common_vendor.o(clearAllOptions),
+        p: items.value.length > 0
       }, items.value.length > 0 ? {
-        l: common_vendor.t(items.value.length),
-        m: common_vendor.f(items.value, (item, index, i0) => {
+        q: common_vendor.t(items.value.length),
+        r: common_vendor.f(items.value, (item, index, i0) => {
           return {
             a: common_vendor.t(item.type === "truth" ? "真心话" : "大冒险"),
             b: common_vendor.t(item.text),
@@ -307,29 +360,29 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        n: filteredItems.value.length >= 3
+        s: filteredItems.value.length >= 3
       }, filteredItems.value.length >= 3 ? common_vendor.e({
-        o: selectedItem.value.text
+        t: selectedItem.value.text
       }, selectedItem.value.text ? {
-        p: common_vendor.t(selectedMode.value === "truth" ? "真心话" : "大冒险"),
-        q: common_vendor.t(selectedItem.value.text)
+        v: common_vendor.t(selectedMode.value === "truth" ? "真心话" : "大冒险"),
+        w: common_vendor.t(selectedItem.value.text)
       } : {}, {
-        r: common_vendor.o(onSpinEnd),
-        s: common_vendor.o(startSpin),
-        t: common_vendor.p({
+        x: common_vendor.o(onSpinEnd),
+        y: common_vendor.o(startSpin),
+        z: common_vendor.p({
           items: filteredItems.value,
           spinning: isSpinning.value,
           stopRequested: stopRequested.value
         }),
-        v: common_vendor.t(isSpinning.value ? "旋转中..." : "开始旋转"),
-        w: common_vendor.o(startSpin),
-        x: isSpinning.value ? 1 : "",
-        y: common_vendor.o(stopSpin),
-        z: !isSpinning.value ? 1 : ""
+        A: common_vendor.t(isSpinning.value ? "旋转中..." : "开始旋转"),
+        B: common_vendor.o(startSpin),
+        C: isSpinning.value ? 1 : "",
+        D: common_vendor.o(stopSpin),
+        E: !isSpinning.value ? 1 : ""
       }) : {}, {
-        A: history.value.length > 0
+        F: history.value.length > 0
       }, history.value.length > 0 ? {
-        B: common_vendor.f(history.value, (item, index, i0) => {
+        G: common_vendor.f(history.value, (item, index, i0) => {
           return {
             a: common_vendor.t(item.type === "truth" ? "真心话" : "大冒险"),
             b: common_vendor.t(item.date),
@@ -337,9 +390,9 @@ const _sfc_main = {
             d: index
           };
         }),
-        C: common_vendor.o(clearHistory),
-        D: common_vendor.o(clearAllData),
-        E: common_vendor.o(clearAllOptions)
+        H: common_vendor.o(clearHistory),
+        I: common_vendor.o(clearAllData),
+        J: common_vendor.o(clearAllOptions)
       } : {});
     };
   }

@@ -7,12 +7,28 @@
 			uni.setNavigationBarTitle({
 				title: '真心话大冒险'
 			})
+			
+			// 检查是否需要显示新手指引
+			this.checkNewUserGuide()
 		},
 		onShow: function() {
 			console.log('App Show')
 		},
 		onHide: function() {
 			console.log('App Hide')
+		},
+		methods: {
+			checkNewUserGuide() {
+				try {
+					const guideCompleted = uni.getStorageSync('truth-or-dare-guide-completed')
+					if (!guideCompleted) {
+						console.log('检测到新用户，将显示新手指引')
+						// 新用户的欢迎提示可以在这里添加
+					}
+				} catch (e) {
+					console.error('检查新手指引状态失败:', e)
+				}
+			}
 		}
 	}
 </script>
@@ -22,10 +38,21 @@
 	page {
 		font-family: 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 		background-color: #f8f8f8;
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		height: 100%;
 	}
 	
+
+	
 	.container {
-		padding: 20rpx;
+		padding: 30rpx;
+		margin: 0 auto;
+		max-width: 750rpx;
+		width: 100%;
+		box-sizing: border-box;
 	}
 	
 	.btn {
@@ -44,5 +71,52 @@
 		padding: 30rpx;
 		margin-bottom: 30rpx;
 		box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+		width: 100%;
+		box-sizing: border-box;
+	}
+	
+	/* 响应式布局 */
+	@media screen and (min-width: 768rpx) {
+		.container {
+			padding: 40rpx;
+		}
+	}
+	
+	@media screen and (max-width: 480rpx) {
+		.container {
+			padding: 20rpx;
+		}
+	}
+	
+	/* 新手指引相关样式 */
+	.guide-highlight-element {
+		position: relative;
+		z-index: 999;
+	}
+	
+	.guide-highlight-element::after {
+		content: '';
+		position: absolute;
+		top: -10rpx;
+		left: -10rpx;
+		right: -10rpx;
+		bottom: -10rpx;
+		border: 4rpx solid #FF6B6B;
+		border-radius: 15rpx;
+		box-shadow: 0 0 20rpx rgba(255, 107, 107, 0.6);
+		animation: guideGlow 2s infinite;
+		pointer-events: none;
+	}
+	
+	@keyframes guideGlow {
+		0% {
+			box-shadow: 0 0 20rpx rgba(255, 107, 107, 0.6);
+		}
+		50% {
+			box-shadow: 0 0 30rpx rgba(255, 107, 107, 0.9);
+		}
+		100% {
+			box-shadow: 0 0 20rpx rgba(255, 107, 107, 0.6);
+		}
 	}
 </style>

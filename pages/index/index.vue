@@ -1,5 +1,17 @@
 <template>
 	<view class="container">
+		<!-- 新手指引按钮 -->
+		<view class="guide-trigger" @click="showNewUserGuide" v-if="!showGuideComponent">
+			<text class="guide-icon">?</text>
+		</view>
+		
+		<!-- 新手指引组件 -->
+		<guide 
+			:show="showGuideComponent" 
+			@complete="onGuideComplete"
+			@close="onGuideClose"
+		/>
+		
 		<view class="mode-selector card">
 			<view class="title">选择模式</view>
 			<view class="mode-buttons">
@@ -84,6 +96,10 @@ const isSpinning = ref(false);
 const stopRequested = ref(false);
 const selectedItem = ref({ text: '' });
 
+// 新手指引状态
+const showGuideComponent = ref(false);
+const isFirstTimeUser = ref(false);
+
 // 为每个模式分别保存上一次的选择
 const lastSelectedItems = ref({
 	truth: { text: '' },
@@ -127,6 +143,9 @@ const filteredItems = computed(() => {
 
 // 生命周期钩子 - 组件挂载时
 onMounted(() => {
+	// 检查是否是首次使用
+	checkFirstTimeUser();
+	
 	// 尝试从本地存储加载数据
 	try {
 		const savedItems = uni.getStorageSync('truth-or-dare-items');
@@ -160,6 +179,51 @@ onMounted(() => {
 });
 
 // 方法
+
+// 新手指引相关方法
+const checkFirstTimeUser = () => {
+	try {
+		const guideCompleted = uni.getStorageSync('truth-or-dare-guide-completed');
+		if (!guideCompleted) {
+			isFirstTimeUser.value = true;
+			// 延迟显示指引，等页面渲染完成
+			setTimeout(() => {
+				showGuideComponent.value = true;
+			}, 1000);
+		}
+	} catch (e) {
+		console.error('检查首次使用状态失败:', e);
+	}
+};
+
+const showNewUserGuide = () => {
+	showGuideComponent.value = true;
+};
+
+const onGuideComplete = () => {
+	showGuideComponent.value = false;
+	isFirstTimeUser.value = false;
+	
+	// 如果是首次用户且没有任何内容，自动导入默认内容
+	if (items.value.length === 0) {
+		setTimeout(() => {
+			uni.showModal({
+				title: '温馨提示',
+				content: '要为您自动导入一些默认内容开始游戏吗？',
+				success: (res) => {
+					if (res.confirm) {
+						importDefaultItems();
+					}
+				}
+			});
+		}, 500);
+	}
+};
+
+const onGuideClose = () => {
+	showGuideComponent.value = false;
+};
+
 const selectMode = (mode) => {
 	console.log('选择模式:', mode);
 	const oldMode = selectedMode.value;
@@ -431,8 +495,26 @@ const clearAllOptions = () => {
 </script>
 
 <style>
+/* 确保页面布局正确 */
+page {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+/* 确保视窗处理正确 */
 .container {
 	padding: 30rpx;
+	margin: 0 auto;
+	max-width: 750rpx;
+	width: calc(100% - 0rpx); /* 确保完整宽度 */
+	min-height: 100vh;
+	position: relative;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
 }
 
 .title {
@@ -711,5 +793,78 @@ const clearAllOptions = () => {
 .reset-btn:active {
 	opacity: 0.8;
 	transform: scale(0.98);
+}
+
+/* 确保卡片在容器中正确显示 */
+.card {
+	width: 100%;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+/* 确保模式选择器居中 */
+.mode-selector.card {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* 响应式布局调整 */
+@media screen and (min-width: 768rpx) {
+	.container {
+		padding: 40rpx;
+		max-width: 680rpx;
+	}
+}
+
+@media screen and (max-width: 480rpx) {
+	.container {
+		padding: 20rpx;
+		max-width: 100%;
+	}
+}
+
+@media screen and (min-width: 1024rpx) {
+	.container {
+		padding: 50rpx;
+		max-width: 600rpx;
+	}
+}
+
+/* 新手指引相关样式 */
+.guide-trigger {
+	position: fixed;
+	top: 150rpx; /* 调整位置避免与导航栏冲突 */
+	right: 30rpx;
+	width: 80rpx;
+	height: 80rpx;
+	background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.4);
+	z-index: 99;
+	animation: float 3s ease-in-out infinite;
+}
+
+.guide-trigger:active {
+	opacity: 0.8;
+	transform: scale(0.95);
+}
+
+.guide-icon {
+	color: #fff;
+	font-size: 36rpx;
+	font-weight: bold;
+	text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+}
+
+@keyframes float {
+	0%, 100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-10rpx);
+	}
 }
 </style>

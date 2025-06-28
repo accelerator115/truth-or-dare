@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-	import { ref, watch, computed, nextTick, defineProps, defineEmits } from 'vue';
+	import { ref, watch, computed, nextTick } from 'vue';
 	
 	// #ifdef APP-NVUE
 	const animation = uni.requireNativePlugin('animation');
